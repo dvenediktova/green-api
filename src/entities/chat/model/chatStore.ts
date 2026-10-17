@@ -5,6 +5,7 @@ interface ChatState {
   chats: Chat[]
   activeChatId: string | null
   addChat: (phone: string) => string
+  ensureChat: (chatId: string) => string
   setActiveChat: (id: string) => void
   addMessage: (chatId: string, text: string, direction: ChatMessage['direction']) => string
   setMessageStatus: (chatId: string, messageId: string, status: MessageStatus) => void
@@ -26,6 +27,14 @@ export const useChatStore = create<ChatState>((set, get) => ({
     }
     const chat: Chat = { id, phone: id, messages: [] }
     set((state) => ({ chats: [...state.chats, chat], activeChatId: id }))
+    return id
+  },
+  ensureChat: (chatId) => {
+    const id = normalizePhone(chatId)
+    const existing = get().chats.find((chat) => chat.id === id)
+    if (existing) return existing.id
+    const chat: Chat = { id, phone: id, messages: [] }
+    set((state) => ({ chats: [...state.chats, chat] }))
     return id
   },
   setActiveChat: (id) => set({ activeChatId: id }),

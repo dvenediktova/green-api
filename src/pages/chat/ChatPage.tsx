@@ -3,6 +3,7 @@ import { UserOutlined, CheckOutlined, ClockCircleOutlined, ExclamationCircleOutl
 import { ChatList } from '../../features/chat-list'
 import { NewChatButton } from '../../features/new-chat'
 import { MessageInput } from '../../features/send-message'
+import { useReceiveMessages } from '../../features/receive-messages'
 import { useChatStore } from '../../entities/chat'
 import type { GreenApiCredentials } from '../../entities/instance'
 
@@ -20,6 +21,7 @@ function MessageStatusIcon({ status }: { status: 'pending' | 'sent' | 'error' })
 }
 
 export function ChatPage({ credentials, onLogout }: ChatPageProps) {
+  useReceiveMessages(credentials)
   const chats = useChatStore((state) => state.chats)
   const activeChatId = useChatStore((state) => state.activeChatId)
   const activeChat = chats.find((chat) => chat.id === activeChatId)
