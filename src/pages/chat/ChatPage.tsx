@@ -1,16 +1,25 @@
-import { Avatar, Button, Empty, Input, Layout, Typography } from 'antd'
-import { SendOutlined, UserOutlined } from '@ant-design/icons'
+import { Avatar, Button, Empty, Layout, Space, Typography } from 'antd'
+import { UserOutlined, CheckOutlined, ClockCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { ChatList } from '../../features/chat-list'
 import { NewChatButton } from '../../features/new-chat'
+import { MessageInput } from '../../features/send-message'
 import { useChatStore } from '../../entities/chat'
+import type { GreenApiCredentials } from '../../entities/instance'
 
 const { Sider, Header, Content } = Layout
 
 interface ChatPageProps {
+  credentials: GreenApiCredentials
   onLogout: () => void
 }
 
-export function ChatPage({ onLogout }: ChatPageProps) {
+function MessageStatusIcon({ status }: { status: 'pending' | 'sent' | 'error' }) {
+  if (status === 'pending') return <ClockCircleOutlined style={{ fontSize: 12, opacity: 0.6 }} />
+  if (status === 'error') return <ExclamationCircleOutlined style={{ fontSize: 12, color: '#ff4d4f' }} />
+  return <CheckOutlined style={{ fontSize: 12, opacity: 0.6 }} />
+}
+
+export function ChatPage({ credentials, onLogout }: ChatPageProps) {
   const chats = useChatStore((state) => state.chats)
   const activeChatId = useChatStore((state) => state.activeChatId)
   const activeChat = chats.find((chat) => chat.id === activeChatId)
@@ -47,19 +56,35 @@ export function ChatPage({ onLogout }: ChatPageProps) {
             </Header>
             <Content style={{ padding: 16, overflowY: 'auto', background: '#f5f5f5' }}>
               {activeChat.messages.length === 0 && <Empty description="Нет сообщений" style={{ marginTop: 80 }} />}
+              <Space direction="vertical" style={{ width: '100%' }} size={8}>
+                {activeChat.messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: msg.direction === 'out' ? 'flex-end' : 'flex-start',
+                    }}
+                  >
+                    <div
+                      style={{
+                        maxWidth: '60%',
+                        padding: '8px 12px',
+                        borderRadius: 12,
+                        background: msg.direction === 'out' ? '#95ec69' : '#fff',
+                      }}
+                    >
+                      <Typography.Text>{msg.text}</Typography.Text>
+                      {msg.direction === 'out' && (
+                        <span style={{ marginLeft: 6 }}>
+                          <MessageStatusIcon status={msg.status} />
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </Space>
             </Content>
-            <div
-              style={{
-                padding: 16,
-                background: '#fff',
-                borderTop: '1px solid #f0f0f0',
-                display: 'flex',
-                gap: 8,
-              }}
-            >
-              <Input placeholder="Введите сообщение..." disabled />
-              <Button type="primary" icon={<SendOutlined />} disabled />
-            </div>
+            <MessageInput chatId={activeChat.id} credentials={credentials} />
           </>
         ) : (
           <Content style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5' }}>

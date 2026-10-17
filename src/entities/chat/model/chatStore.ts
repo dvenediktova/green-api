@@ -1,11 +1,13 @@
 import { create } from 'zustand'
-import type { Chat } from './types'
+import type { Chat, ChatMessage, MessageStatus } from './types'
 
 interface ChatState {
   chats: Chat[]
   activeChatId: string | null
   addChat: (phone: string) => string
   setActiveChat: (id: string) => void
+  addMessage: (chatId: string, text: string, direction: ChatMessage['direction']) => string
+  setMessageStatus: (chatId: string, messageId: string, status: MessageStatus) => void
 }
 
 function normalizePhone(phone: string): string {
@@ -27,4 +29,33 @@ export const useChatStore = create<ChatState>((set, get) => ({
     return id
   },
   setActiveChat: (id) => set({ activeChatId: id }),
+  addMessage: (chatId, text, direction) => {
+    const message: ChatMessage = {
+      id: crypto.randomUUID(),
+      text,
+      direction,
+      timestamp: Date.now(),
+      status: 'pending',
+    }
+    set((state) => ({
+      chats: state.chats.map((chat) =>
+        chat.id === chatId ? { ...chat, messages: [...chat.messages, message] } : chat,
+      ),
+    }))
+    return message.id
+  },
+  setMessageStatus: (chatId, messageId, status) => {
+    set((state) => ({
+      chats: state.chats.map((chat) =>
+        chat.id === chatId
+          ? {
+              ...chat,
+              messages: chat.messages.map((message) =>
+                message.id === messageId ? { ...message, status } : message,
+              ),
+            }
+          : chat,
+      ),
+    }))
+  },
 }))

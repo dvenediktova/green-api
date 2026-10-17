@@ -11,7 +11,7 @@ function App() {
     return <LoginPage onLogin={login} />
   }
 
-  return <ChatPage onLogout={logout} />
+  return <ChatPage credentials={credentials} onLogout={logout} />
 }
 
 export default App
