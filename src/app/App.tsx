@@ -1,6 +1,6 @@
-import { Button, Typography } from 'antd'
 import { useAuthStore } from '../features/auth'
 import { LoginPage } from '../pages/login'
+import { ChatPage } from '../pages/chat'
 
 function App() {
   const credentials = useAuthStore((state) => state.credentials)
@@ -11,14 +11,7 @@ function App() {
     return <LoginPage onLogin={login} />
   }
 
-  return (
-    <div style={{ padding: 24 }}>
-      <Typography.Text>Авторизован как instance {credentials.idInstance}</Typography.Text>
-      <div style={{ marginTop: 16 }}>
-        <Button onClick={logout}>Выйти</Button>
-      </div>
-    </div>
-  )
+  return <ChatPage onLogout={logout} />
 }
 
 export default App

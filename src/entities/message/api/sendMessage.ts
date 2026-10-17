@@ -1,6 +1,5 @@
 import axios from 'axios'
-import { instanceUrl } from '../../../shared/api/client'
-import type { GreenApiCredentials } from '../../../shared/api/types'
+import { instanceUrl, type GreenApiCredentials } from '../../../shared/api'
 
 export async function sendMessage(
   credentials: GreenApiCredentials,
