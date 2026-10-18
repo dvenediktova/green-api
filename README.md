@@ -1,32 +1,59 @@
-# React + TypeScript + Vite
+# GREEN-API Chat (Telegram)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Тестовое задание: веб-интерфейс для отправки и получения текстовых сообщений через
+[GREEN-API](https://green-api.com/) (канал Telegram), оформление ориентировано на
+[web.max.ru](https://web.max.ru/).
 
-Currently, two official plugins are available:
+## Стек
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Vite + React 19 + TypeScript
+- [antd](https://ant.design/) — UI-кит
+- axios — HTTP-клиент
+- zustand (+ `persist`) — состояние авторизации с сохранением в localStorage
+- Feature-Sliced Design (`app → pages → features → entities → shared`)
 
-## React Compiler
+## Запуск
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Приложение откроется на `http://localhost:5173` (адрес выведет сама команда).
+
+Другие команды:
+
+```bash
+npm run build    # production-сборка (tsc -b && vite build)
+npm run preview   # предпросмотр собранного билда
+npm run lint      # ESLint
+```
+
+## Что нужно для теста
+
+1. Активный инстанс GREEN-API с подключённым каналом Telegram (авторизация по QR-коду
+   в личном кабинете GREEN-API).
+2. `idInstance` и `apiTokenInstance` этого инстанса — вводятся на экране входа
+   (сохраняются в `localStorage`, повторного входа не требуется до выхода).
+3. Собеседник в Telegram, с которым можно переписываться (для входящих
+   сообщений — пишет собеседник, приложение получит их через long polling).
+
+После входа:
+
+- «Новый чат» — создать чат по номеру телефона получателя (10–15 цифр).
+- Выбрать чат в списке слева, написать и отправить сообщение — статус сообщения
+  (отправляется / отправлено / ошибка) отображается рядом с его временем.
+- Входящие сообщения от уже известных и от новых собеседников появляются автоматически;
+  если GREEN-API временно недоступен, приложение покажет баннер и будет переподключаться
+  с нарастающей паузой.
+
+## Известные ограничения
+
+- Чаты и история сообщений хранятся только в памяти текущей сессии браузера (без
+  сохранения и без синхронизации между устройствами) — это соответствует объёму
+  тестового задания.
+- Для Telegram-канала GREEN-API не резолвит получателя по номеру телефона — реально
+  доставляются только сообщения в чат, созданный по числовому `chatId` (его можно
+  получить в личном кабинете GREEN-API из истории/входящих уведомлений). Поле «Новый
+  чат» принимает номер телефона ради единого UI для разных каналов (для WhatsApp это
+  рабочий сценарий), но для Telegram чат, скорее всего, нужно создавать по chatId.

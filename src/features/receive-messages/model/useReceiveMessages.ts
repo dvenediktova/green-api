@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { deleteNotification, receiveNotification } from '../../../entities/message'
 import { useChatStore } from '../../../entities/chat'
 import type { GreenApiCredentials } from '../../../entities/instance'
@@ -6,9 +6,12 @@ import type { GreenApiCredentials } from '../../../entities/instance'
 const RETRY_DELAY_MS = 2000
 const MAX_RETRY_DELAY_MS = 30000
 
-export function useReceiveMessages(credentials: GreenApiCredentials) {
+export type ConnectionStatus = 'online' | 'reconnecting'
+
+export function useReceiveMessages(credentials: GreenApiCredentials): ConnectionStatus {
   const ensureChat = useChatStore((state) => state.ensureChat)
   const addMessage = useChatStore((state) => state.addMessage)
+  const [status, setStatus] = useState<ConnectionStatus>('online')
 
   useEffect(() => {
     let stopped = false
@@ -19,6 +22,7 @@ export function useReceiveMessages(credentials: GreenApiCredentials) {
         try {
           const notification = await receiveNotification(credentials)
           retryDelay = RETRY_DELAY_MS
+          setStatus('online')
 
           if (!notification) continue
 
@@ -35,6 +39,7 @@ export function useReceiveMessages(credentials: GreenApiCredentials) {
           await deleteNotification(credentials, receiptId)
         } catch {
           if (stopped) return
+          setStatus('reconnecting')
           await new Promise((resolve) => setTimeout(resolve, retryDelay))
           retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY_MS)
         }
@@ -47,4 +52,6 @@ export function useReceiveMessages(credentials: GreenApiCredentials) {
       stopped = true
     }
   }, [credentials, ensureChat, addMessage])
+
+  return status
 }
