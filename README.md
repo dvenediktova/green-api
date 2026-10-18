@@ -10,7 +10,7 @@
 - [antd](https://ant.design/) — UI-кит
 - axios — HTTP-клиент
 - zustand (+ `persist`) — состояние авторизации с сохранением в localStorage
-- Feature-Sliced Design (`app → pages → features → entities → shared`)
+- Feature-Sliced Design (`app → pages → widgets → features → entities → shared`)
 
 ## Запуск
 
@@ -19,7 +19,7 @@ npm install
 npm run dev
 ```
 
-Приложение откроется на `http://localhost:5173` (адрес выведет сама команда).
+Приложение откроется на `http://localhost:8080` (порт зафиксирован в `vite.config.ts`).
 
 Другие команды:
 
