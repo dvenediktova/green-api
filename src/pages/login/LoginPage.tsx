@@ -1,5 +1,5 @@
 import { LoginForm } from '../../features/auth'
-import type { GreenApiCredentials } from '../../entities/instance'
+import type { GreenApiCredentials } from '../../shared/api'
 
 interface LoginPageProps {
   onLogin: (credentials: GreenApiCredentials) => void

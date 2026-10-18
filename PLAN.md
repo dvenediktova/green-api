@@ -10,7 +10,7 @@
 - antd — UI-кит
 - axios — HTTP-клиент
 - zustand (+ `persist`) — состояние авторизации с сохранением в localStorage
-- Архитектура: Feature-Sliced Design (`app → pages → features → entities → shared`)
+- Архитектура: Feature-Sliced Design (`app → pages → widgets → features → entities → shared`)
 
 ## Структура проекта (FSD)
 
@@ -18,7 +18,11 @@
 src/
 ├── app/            # композиция приложения, роутинг по состоянию авторизации
 ├── pages/
-│   └── login/      # страница логина
+│   ├── login/      # страница логина
+│   └── chat/       # страница чата — тонкая, компонует виджеты
+├── widgets/
+│   ├── chat-sidebar/   # сайдбар: новый чат + список чатов + выход
+│   └── conversation/   # окно переписки: хедер, лента сообщений, поле ввода
 ├── features/
 │   └── auth/       # вход по idInstance/apiTokenInstance (model: zustand-store, ui: форма)
 ├── entities/
@@ -29,7 +33,8 @@ src/
 ```
 
 Правила: импорты только вниз по слоям, каждый слайс отдаёт публичный API через `index.ts`,
-сущности не зависят друг от друга напрямую.
+сущности не зависят друг от друга напрямую. `widgets` — композиция нескольких `features`/`entities`
+в законченный UI-блок, который использует `pages`.
 
 ## Этапы
 
@@ -67,6 +72,17 @@ src/
       отправка и получение сообщений работают)
 - [x] Обработка edge-кейсов (баннер о разрыве соединения при polling, ошибки отправки и логина)
 - [x] Обновление `README.md` (как запустить, что требуется для теста)
+
+### ✅ Этап 6 — Ревью и чистка архитектуры (FSD)
+- [x] Устранена путаница с типом `GreenApiCredentials`: раньше features/pages брали его через
+      реэкспорт из `entities/instance`, хотя реально он объявлен в `shared/api` — теперь везде
+      импортируется напрямую из `shared/api`, реэкспорт из `entities/instance` убран
+- [x] Добавлен слой `widgets` (между `features` и `pages`): `widgets/chat-sidebar` и
+      `widgets/conversation` — композиция фич в законченные UI-блоки. `pages/chat/ChatPage`
+      стал тонким — только раскладка и переключение между виджетами
+- [x] Деприкейтед-пропсы antd исправлены: `Alert.message` → `title`, `Space.direction` →
+      `orientation`, `List`/`List.Item`/`List.Item.Meta` → `Listy`
+- [x] Инлайн-стили вынесены в CSS-модули, цвета — в CSS-переменные (`src/app/theme.css`)
 
 ## Открытые вопросы / риски
 

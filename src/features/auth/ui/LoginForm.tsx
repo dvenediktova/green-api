@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Button, Card, Form, Input, Typography, Alert } from 'antd'
 import axios from 'axios'
 import { getSettings } from '../../../entities/instance'
-import type { GreenApiCredentials } from '../../../entities/instance'
+import type { GreenApiCredentials } from '../../../shared/api'
 import styles from './LoginForm.module.css'
 
 interface LoginFormProps {

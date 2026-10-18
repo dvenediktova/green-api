@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { deleteNotification, receiveNotification } from '../../../entities/message'
 import { useChatStore } from '../../../entities/chat'
-import type { GreenApiCredentials } from '../../../entities/instance'
+import type { GreenApiCredentials } from '../../../shared/api'
 
 const RETRY_DELAY_MS = 2000
 const MAX_RETRY_DELAY_MS = 30000

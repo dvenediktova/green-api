@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { GreenApiCredentials } from '../../../entities/instance'
+import type { GreenApiCredentials } from '../../../shared/api'
 
 interface AuthState {
   credentials: GreenApiCredentials | null

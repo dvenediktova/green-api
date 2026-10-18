@@ -1,0 +1,81 @@
+.header {
+  background: var(--chat-color-surface);
+  border-bottom: 1px solid var(--chat-color-border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.headerAvatar {
+  background: var(--chat-color-primary);
+}
+
+.content {
+  padding: 16px;
+  overflow-y: auto;
+  background: var(--chat-color-page-bg);
+}
+
+.emptyMessages {
+  margin-top: 80px;
+}
+
+.messageList {
+  width: 100%;
+}
+
+.messageRow {
+  display: flex;
+}
+
+.messageRowOut {
+  justify-content: flex-end;
+}
+
+.messageRowIn {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: 60%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: var(--chat-shadow-bubble);
+}
+
+.bubbleOut {
+  background: var(--chat-color-primary);
+  color: var(--chat-color-on-primary);
+}
+
+.bubbleIn {
+  background: var(--chat-color-surface);
+  color: var(--chat-color-text);
+}
+
+.bubbleText {
+  color: inherit;
+  white-space: pre-wrap;
+}
+
+.bubbleMeta {
+  margin-left: 8px;
+  font-size: 11px;
+  opacity: 0.75;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  float: right;
+  margin-top: 2px;
+}
+
+.statusIcon {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.statusIconError {
+  font-size: 12px;
+  color: var(--chat-color-error);
+}

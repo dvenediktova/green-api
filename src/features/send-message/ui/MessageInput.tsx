@@ -4,7 +4,7 @@ import { SendOutlined } from '@ant-design/icons'
 import axios from 'axios'
 import { sendMessage } from '../../../entities/message'
 import { useChatStore } from '../../../entities/chat'
-import type { GreenApiCredentials } from '../../../entities/instance'
+import type { GreenApiCredentials } from '../../../shared/api'
 import styles from './MessageInput.module.css'
 
 interface MessageInputProps {
