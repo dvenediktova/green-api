@@ -4,38 +4,36 @@ import type { Chat, ChatMessage, MessageStatus } from './types'
 interface ChatState {
   chats: Chat[]
   activeChatId: string | null
-  addChat: (phone: string) => string
+  addChat: (chatId: string, phone: string) => string
   ensureChat: (chatId: string) => string
   setActiveChat: (id: string) => void
   addMessage: (chatId: string, text: string, direction: ChatMessage['direction']) => string
   setMessageStatus: (chatId: string, messageId: string, status: MessageStatus) => void
 }
 
-function normalizePhone(phone: string): string {
-  return phone.replace(/\D/g, '')
+function displayPhone(chatId: string): string {
+  return chatId.replace(/@.*$/, '')
 }
 
 export const useChatStore = create<ChatState>((set, get) => ({
   chats: [],
   activeChatId: null,
-  addChat: (phone) => {
-    const id = normalizePhone(phone)
-    const existing = get().chats.find((chat) => chat.id === id)
+  addChat: (chatId, phone) => {
+    const existing = get().chats.find((chat) => chat.id === chatId)
     if (existing) {
       set({ activeChatId: existing.id })
       return existing.id
     }
-    const chat: Chat = { id, phone: id, messages: [] }
-    set((state) => ({ chats: [...state.chats, chat], activeChatId: id }))
-    return id
+    const chat: Chat = { id: chatId, phone, messages: [] }
+    set((state) => ({ chats: [...state.chats, chat], activeChatId: chatId }))
+    return chatId
   },
   ensureChat: (chatId) => {
-    const id = normalizePhone(chatId)
-    const existing = get().chats.find((chat) => chat.id === id)
+    const existing = get().chats.find((chat) => chat.id === chatId)
     if (existing) return existing.id
-    const chat: Chat = { id, phone: id, messages: [] }
+    const chat: Chat = { id: chatId, phone: displayPhone(chatId), messages: [] }
     set((state) => ({ chats: [...state.chats, chat] }))
-    return id
+    return chatId
   },
   setActiveChat: (id) => set({ activeChatId: id }),
   addMessage: (chatId, text, direction) => {

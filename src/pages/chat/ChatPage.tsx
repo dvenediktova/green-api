@@ -21,7 +21,7 @@ export function ChatPage({ credentials, onLogout }: ChatPageProps) {
 
   return (
     <Layout className={styles.layout}>
-      <ChatSidebar onLogout={onLogout} />
+      <ChatSidebar credentials={credentials} onLogout={onLogout} />
       <Layout>
         {connectionStatus === 'reconnecting' && (
           <Alert type="warning" banner showIcon title="Нет соединения с GREEN-API. Повторная попытка..." />

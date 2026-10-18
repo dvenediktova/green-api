@@ -4,7 +4,9 @@ import { NewChatButton } from './NewChatButton'
 
 describe('NewChatButton', () => {
   it('renders the trigger button with a closed modal', () => {
-    const { container } = render(<NewChatButton />)
+    const { container } = render(
+      <NewChatButton credentials={{ idInstance: '0', apiTokenInstance: 'token' }} />,
+    )
     expect(container).toMatchSnapshot()
   })
 })
