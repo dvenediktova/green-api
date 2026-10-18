@@ -6,7 +6,7 @@ interface ChatState {
   activeChatId: string | null
   addChat: (chatId: string, phone: string) => string
   ensureChat: (chatId: string) => string
-  setActiveChat: (id: string) => void
+  setActiveChat: (id: string | null) => void
   addMessage: (chatId: string, text: string, direction: ChatMessage['direction']) => string
   setMessageStatus: (chatId: string, messageId: string, status: MessageStatus) => void
   setMessageIdMessage: (chatId: string, messageId: string, idMessage: string) => void

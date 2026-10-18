@@ -1,7 +1,14 @@
 import { useEffect, useRef } from 'react'
-import { Avatar, Empty, Layout, Space, Typography } from 'antd'
-import { UserOutlined, CheckOutlined, ClockCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import { Avatar, Button, Empty, Layout, Space, Typography } from 'antd'
+import {
+  UserOutlined,
+  CheckOutlined,
+  ClockCircleOutlined,
+  ExclamationCircleOutlined,
+  ArrowLeftOutlined,
+} from '@ant-design/icons'
 import { MessageInput } from '../../../features/send-message'
+import { useChatStore } from '../../../entities/chat'
 import type { Chat, MessageStatus } from '../../../entities/chat'
 import type { GreenApiCredentials } from '../../../shared/api'
 import styles from './Conversation.module.css'
@@ -33,6 +40,7 @@ function MessageStatusIcon({ status }: { status: MessageStatus }) {
 
 export function Conversation({ chat, credentials }: ConversationProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const setActiveChat = useChatStore((state) => state.setActiveChat)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ block: 'end' })
@@ -41,6 +49,12 @@ export function Conversation({ chat, credentials }: ConversationProps) {
   return (
     <>
       <Header className={styles.header}>
+        <Button
+          type="text"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => setActiveChat(null)}
+          className={styles.backButton}
+        />
         <Avatar icon={<UserOutlined />} className={styles.headerAvatar} />
         <Typography.Text strong>{chat.phone}</Typography.Text>
       </Header>

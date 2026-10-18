@@ -8,3 +8,10 @@
   justify-content: center;
   background: var(--chat-color-page-bg);
 }
+
+/* breakpoint kept in sync with MOBILE_BREAKPOINT in shared/lib/useIsMobile.ts */
+@media (max-width: 768px) {
+  .conversationHidden {
+    display: none;
+  }
+}

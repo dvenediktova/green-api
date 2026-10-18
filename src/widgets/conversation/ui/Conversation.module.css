@@ -94,3 +94,18 @@
   color: var(--chat-color-read);
   opacity: 1;
 }
+
+.backButton {
+  display: none;
+}
+
+/* breakpoint kept in sync with MOBILE_BREAKPOINT in shared/lib/useIsMobile.ts */
+@media (max-width: 768px) {
+  .backButton {
+    display: inline-flex;
+  }
+
+  .bubble {
+    max-width: 85%;
+  }
+}
