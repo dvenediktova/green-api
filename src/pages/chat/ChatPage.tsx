@@ -7,6 +7,7 @@ import { MessageInput } from '../../features/send-message'
 import { useReceiveMessages } from '../../features/receive-messages'
 import { useChatStore } from '../../entities/chat'
 import type { GreenApiCredentials } from '../../entities/instance'
+import styles from './ChatPage.module.css'
 
 const { Sider, Header, Content } = Layout
 
@@ -20,9 +21,9 @@ function formatTime(timestamp: number): string {
 }
 
 function MessageStatusIcon({ status }: { status: 'pending' | 'sent' | 'error' }) {
-  if (status === 'pending') return <ClockCircleOutlined style={{ fontSize: 12, opacity: 0.6 }} />
-  if (status === 'error') return <ExclamationCircleOutlined style={{ fontSize: 12, color: '#ff4d4f' }} />
-  return <CheckOutlined style={{ fontSize: 12, opacity: 0.6 }} />
+  if (status === 'pending') return <ClockCircleOutlined className={styles.statusIcon} />
+  if (status === 'error') return <ExclamationCircleOutlined className={styles.statusIconError} />
+  return <CheckOutlined className={styles.statusIcon} />
 }
 
 export function ChatPage({ credentials, onLogout }: ChatPageProps) {
@@ -37,15 +38,15 @@ export function ChatPage({ credentials, onLogout }: ChatPageProps) {
   }, [activeChat?.id, activeChat?.messages.length])
 
   return (
-    <Layout style={{ height: '100vh' }}>
-      <Sider width={320} style={{ background: '#fff', borderRight: '1px solid #f0f0f0', position: 'relative' }}>
-        <div style={{ padding: 16, borderBottom: '1px solid #f0f0f0' }}>
+    <Layout className={styles.layout}>
+      <Sider width={320} className={styles.sider}>
+        <div className={styles.siderTop}>
           <NewChatButton />
         </div>
-        <div style={{ overflowY: 'auto', height: 'calc(100vh - 129px)' }}>
+        <div className={styles.siderList}>
           <ChatList />
         </div>
-        <div style={{ padding: 16, borderTop: '1px solid #f0f0f0' }}>
+        <div className={styles.siderBottom}>
           <Button block onClick={onLogout}>
             Выйти
           </Button>
@@ -57,62 +58,30 @@ export function ChatPage({ credentials, onLogout }: ChatPageProps) {
             type="warning"
             banner
             showIcon
-            message="Нет соединения с GREEN-API. Повторная попытка..."
+            title="Нет соединения с GREEN-API. Повторная попытка..."
           />
         )}
         {activeChat ? (
           <>
-            <Header
-              style={{
-                background: '#fff',
-                borderBottom: '1px solid #f0f0f0',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-              }}
-            >
-              <Avatar icon={<UserOutlined />} style={{ background: '#1677ff' }} />
+            <Header className={styles.header}>
+              <Avatar icon={<UserOutlined />} className={styles.headerAvatar} />
               <Typography.Text strong>{activeChat.phone}</Typography.Text>
             </Header>
-            <Content style={{ padding: 16, overflowY: 'auto', background: '#eef2f5' }}>
+            <Content className={styles.content}>
               {activeChat.messages.length === 0 ? (
-                <Empty description="Нет сообщений. Напишите первое!" style={{ marginTop: 80 }} />
+                <Empty description="Нет сообщений. Напишите первое!" className={styles.emptyMessages} />
               ) : (
-                <Space direction="vertical" style={{ width: '100%' }} size={8}>
+                <Space orientation="vertical" className={styles.messageList} size={8}>
                   {activeChat.messages.map((msg) => (
                     <div
                       key={msg.id}
-                      style={{
-                        display: 'flex',
-                        justifyContent: msg.direction === 'out' ? 'flex-end' : 'flex-start',
-                      }}
+                      className={`${styles.messageRow} ${msg.direction === 'out' ? styles.messageRowOut : styles.messageRowIn}`}
                     >
                       <div
-                        style={{
-                          maxWidth: '60%',
-                          padding: '8px 12px',
-                          borderRadius: 12,
-                          background: msg.direction === 'out' ? '#1677ff' : '#fff',
-                          color: msg.direction === 'out' ? '#fff' : 'rgba(0, 0, 0, 0.88)',
-                          boxShadow: '0 1px 2px rgba(0, 0, 0, 0.06)',
-                        }}
+                        className={`${styles.bubble} ${msg.direction === 'out' ? styles.bubbleOut : styles.bubbleIn}`}
                       >
-                        <Typography.Text style={{ color: 'inherit', whiteSpace: 'pre-wrap' }}>
-                          {msg.text}
-                        </Typography.Text>
-                        <span
-                          style={{
-                            marginLeft: 8,
-                            fontSize: 11,
-                            opacity: 0.75,
-                            whiteSpace: 'nowrap',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: 4,
-                            float: 'right',
-                            marginTop: 2,
-                          }}
-                        >
+                        <Typography.Text className={styles.bubbleText}>{msg.text}</Typography.Text>
+                        <span className={styles.bubbleMeta}>
                           {formatTime(msg.timestamp)}
                           {msg.direction === 'out' && <MessageStatusIcon status={msg.status} />}
                         </span>
@@ -126,7 +95,7 @@ export function ChatPage({ credentials, onLogout }: ChatPageProps) {
             <MessageInput chatId={activeChat.id} credentials={credentials} />
           </>
         ) : (
-          <Content style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#eef2f5' }}>
+          <Content className={styles.contentCentered}>
             <Empty description="Выберите чат или создайте новый" />
           </Content>
         )}

@@ -5,6 +5,7 @@ import axios from 'axios'
 import { sendMessage } from '../../../entities/message'
 import { useChatStore } from '../../../entities/chat'
 import type { GreenApiCredentials } from '../../../entities/instance'
+import styles from './MessageInput.module.css'
 
 interface MessageInputProps {
   chatId: string
@@ -40,7 +41,7 @@ export function MessageInput({ chatId, credentials }: MessageInputProps) {
   }
 
   return (
-    <div style={{ padding: 16, background: '#fff', borderTop: '1px solid #f0f0f0', display: 'flex', gap: 8 }}>
+    <div className={styles.container}>
       <Input
         placeholder="Введите сообщение..."
         value={text}

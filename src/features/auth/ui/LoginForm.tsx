@@ -3,6 +3,7 @@ import { Button, Card, Form, Input, Typography, Alert } from 'antd'
 import axios from 'axios'
 import { getSettings } from '../../../entities/instance'
 import type { GreenApiCredentials } from '../../../entities/instance'
+import styles from './LoginForm.module.css'
 
 interface LoginFormProps {
   onLogin: (credentials: GreenApiCredentials) => void
@@ -30,9 +31,9 @@ export function LoginForm({ onLogin }: LoginFormProps) {
   }
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-      <Card style={{ width: 360 }}>
-        <Typography.Title level={4} style={{ textAlign: 'center', marginBottom: 24 }}>
+    <div className={styles.wrapper}>
+      <Card className={styles.card}>
+        <Typography.Title level={4} className={styles.title}>
           Вход в GREEN-API
         </Typography.Title>
         <Form layout="vertical" onFinish={handleSubmit} disabled={loading}>
@@ -50,7 +51,7 @@ export function LoginForm({ onLogin }: LoginFormProps) {
           >
             <Input.Password placeholder="d75b3a66374942c5b3c019c698abc2067e151558..." autoComplete="off" />
           </Form.Item>
-          {error && <Alert type="error" message={error} style={{ marginBottom: 16 }} />}
+          {error && <Alert type="error" title={error} className={styles.error} />}
           <Form.Item>
             <Button type="primary" htmlType="submit" block loading={loading}>
               Войти

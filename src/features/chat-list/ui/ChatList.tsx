@@ -1,6 +1,8 @@
-import { Avatar, Empty, List, Typography } from 'antd'
+import { Avatar, Empty, Listy, Typography } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import { useChatStore } from '../../../entities/chat'
+import type { Chat } from '../../../entities/chat'
+import styles from './ChatList.module.css'
 
 function formatTime(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -12,43 +14,38 @@ export function ChatList() {
   const setActiveChat = useChatStore((state) => state.setActiveChat)
 
   if (chats.length === 0) {
-    return <Empty description="Нет чатов" style={{ marginTop: 40, padding: 16 }} />
+    return <Empty description="Нет чатов" className={styles.empty} />
   }
 
   return (
-    <List
-      dataSource={chats}
-      renderItem={(chat) => {
+    <Listy
+      items={chats}
+      rowKey="id"
+      itemRender={(chat: Chat) => {
         const lastMessage = chat.messages[chat.messages.length - 1]
         return (
-          <List.Item
+          <div
             onClick={() => setActiveChat(chat.id)}
-            style={{
-              padding: '12px 16px',
-              cursor: 'pointer',
-              background: chat.id === activeChatId ? '#e6f4ff' : undefined,
-            }}
+            className={`${styles.item} ${chat.id === activeChatId ? styles.itemActive : ''}`}
           >
-            <List.Item.Meta
-              avatar={<Avatar icon={<UserOutlined />} />}
-              title={<Typography.Text strong>{chat.phone}</Typography.Text>}
-              description={
-                lastMessage ? (
-                  <Typography.Text type="secondary" ellipsis style={{ maxWidth: 180, display: 'inline-block' }}>
-                    {lastMessage.direction === 'out' ? 'Вы: ' : ''}
-                    {lastMessage.text}
-                  </Typography.Text>
-                ) : (
-                  <Typography.Text type="secondary">Нет сообщений</Typography.Text>
-                )
-              }
-            />
+            <Avatar icon={<UserOutlined />} />
+            <div className={styles.itemMeta}>
+              <Typography.Text strong>{chat.phone}</Typography.Text>
+              {lastMessage ? (
+                <Typography.Text type="secondary" ellipsis className={styles.preview}>
+                  {lastMessage.direction === 'out' ? 'Вы: ' : ''}
+                  {lastMessage.text}
+                </Typography.Text>
+              ) : (
+                <Typography.Text type="secondary">Нет сообщений</Typography.Text>
+              )}
+            </div>
             {lastMessage && (
-              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+              <Typography.Text type="secondary" className={styles.time}>
                 {formatTime(lastMessage.timestamp)}
               </Typography.Text>
             )}
-          </List.Item>
+          </div>
         )
       }}
     />
