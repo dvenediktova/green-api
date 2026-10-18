@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { deleteNotification, receiveNotification } from '../../../entities/message'
+import type { OutgoingMessageDeliveryStatus } from '../../../entities/message'
 import { useChatStore } from '../../../entities/chat'
+import type { MessageStatus } from '../../../entities/chat'
 import type { GreenApiCredentials } from '../../../shared/api'
 
 const RETRY_DELAY_MS = 2000
@@ -8,9 +10,17 @@ const MAX_RETRY_DELAY_MS = 30000
 
 export type ConnectionStatus = 'online' | 'reconnecting'
 
+function mapDeliveryStatus(status: OutgoingMessageDeliveryStatus): MessageStatus {
+  if (status === 'delivered') return 'delivered'
+  if (status === 'read') return 'read'
+  if (status === 'sent') return 'sent'
+  return 'error'
+}
+
 export function useReceiveMessages(credentials: GreenApiCredentials): ConnectionStatus {
   const ensureChat = useChatStore((state) => state.ensureChat)
   const addMessage = useChatStore((state) => state.addMessage)
+  const setMessageStatusByIdMessage = useChatStore((state) => state.setMessageStatusByIdMessage)
   const [status, setStatus] = useState<ConnectionStatus>('online')
 
   useEffect(() => {
@@ -34,6 +44,11 @@ export function useReceiveMessages(credentials: GreenApiCredentials): Connection
               const id = ensureChat(chatId)
               addMessage(id, text, 'in')
             }
+          } else if (body.typeWebhook === 'outgoingMessageStatus') {
+            const { chatId, idMessage, status: deliveryStatus } = body
+            if (chatId && idMessage && deliveryStatus) {
+              setMessageStatusByIdMessage(chatId, idMessage, mapDeliveryStatus(deliveryStatus))
+            }
           }
 
           await deleteNotification(credentials, receiptId)
@@ -51,7 +66,7 @@ export function useReceiveMessages(credentials: GreenApiCredentials): Connection
     return () => {
       stopped = true
     }
-  }, [credentials, ensureChat, addMessage])
+  }, [credentials, ensureChat, addMessage, setMessageStatusByIdMessage])
 
   return status
 }

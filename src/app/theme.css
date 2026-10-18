@@ -7,5 +7,6 @@
   --chat-color-border: #f0f0f0;
   --chat-color-text: rgb(0 0 0 / 88%);
   --chat-color-error: #ff4d4f;
+  --chat-color-read: #53bdeb;
   --chat-shadow-bubble: 0 1px 2px rgb(0 0 0 / 6%);
 }

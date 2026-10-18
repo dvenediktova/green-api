@@ -17,6 +17,7 @@ export function MessageInput({ chatId, credentials }: MessageInputProps) {
   const [sending, setSending] = useState(false)
   const addMessage = useChatStore((state) => state.addMessage)
   const setMessageStatus = useChatStore((state) => state.setMessageStatus)
+  const setMessageIdMessage = useChatStore((state) => state.setMessageIdMessage)
 
   async function handleSend() {
     const value = text.trim()
@@ -26,7 +27,8 @@ export function MessageInput({ chatId, credentials }: MessageInputProps) {
     const messageId = addMessage(chatId, value, 'out')
     setText('')
     try {
-      await sendMessage(credentials, chatId, value)
+      const { idMessage } = await sendMessage(credentials, chatId, value)
+      setMessageIdMessage(chatId, messageId, idMessage)
       setMessageStatus(chatId, messageId, 'sent')
     } catch (err) {
       setMessageStatus(chatId, messageId, 'error')

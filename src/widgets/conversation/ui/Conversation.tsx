@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Avatar, Empty, Layout, Space, Typography } from 'antd'
 import { UserOutlined, CheckOutlined, ClockCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { MessageInput } from '../../../features/send-message'
-import type { Chat } from '../../../entities/chat'
+import type { Chat, MessageStatus } from '../../../entities/chat'
 import type { GreenApiCredentials } from '../../../shared/api'
 import styles from './Conversation.module.css'
 
@@ -17,9 +17,17 @@ function formatTime(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
-function MessageStatusIcon({ status }: { status: 'pending' | 'sent' | 'error' }) {
+function MessageStatusIcon({ status }: { status: MessageStatus }) {
   if (status === 'pending') return <ClockCircleOutlined className={styles.statusIcon} />
   if (status === 'error') return <ExclamationCircleOutlined className={styles.statusIconError} />
+  if (status === 'delivered' || status === 'read') {
+    return (
+      <span className={`${styles.doubleCheck} ${status === 'read' ? styles.statusIconRead : styles.statusIcon}`}>
+        <CheckOutlined />
+        <CheckOutlined />
+      </span>
+    )
+  }
   return <CheckOutlined className={styles.statusIcon} />
 }
 

@@ -9,6 +9,8 @@ interface ChatState {
   setActiveChat: (id: string) => void
   addMessage: (chatId: string, text: string, direction: ChatMessage['direction']) => string
   setMessageStatus: (chatId: string, messageId: string, status: MessageStatus) => void
+  setMessageIdMessage: (chatId: string, messageId: string, idMessage: string) => void
+  setMessageStatusByIdMessage: (chatId: string, idMessage: string, status: MessageStatus) => void
 }
 
 function displayPhone(chatId: string): string {
@@ -59,6 +61,34 @@ export const useChatStore = create<ChatState>((set, get) => ({
               ...chat,
               messages: chat.messages.map((message) =>
                 message.id === messageId ? { ...message, status } : message,
+              ),
+            }
+          : chat,
+      ),
+    }))
+  },
+  setMessageIdMessage: (chatId, messageId, idMessage) => {
+    set((state) => ({
+      chats: state.chats.map((chat) =>
+        chat.id === chatId
+          ? {
+              ...chat,
+              messages: chat.messages.map((message) =>
+                message.id === messageId ? { ...message, idMessage } : message,
+              ),
+            }
+          : chat,
+      ),
+    }))
+  },
+  setMessageStatusByIdMessage: (chatId, idMessage, status) => {
+    set((state) => ({
+      chats: state.chats.map((chat) =>
+        chat.id === chatId
+          ? {
+              ...chat,
+              messages: chat.messages.map((message) =>
+                message.idMessage === idMessage ? { ...message, status } : message,
               ),
             }
           : chat,
