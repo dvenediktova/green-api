@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`NewChatButton > renders the trigger button with a closed modal 1`] = `
+<div>
+  <button
+    class="ant-btn css-dev-only-do-not-override-jdb7z4 css-var-root ant-btn-primary ant-btn-color-primary ant-btn-variant-solid ant-btn-block"
+    type="button"
+  >
+    <span>
+      Новый чат
+    </span>
+  </button>
+</div>
+`;
